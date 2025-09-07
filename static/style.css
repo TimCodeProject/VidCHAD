@@ -1,0 +1,26 @@
+body {
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.heading {
+    margin: 0;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #00838f 0%, #006064 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 97, 100, 0.3);
+    border-bottom: 3px solid #4fb3bf;
+}
+
+.heading-mark {
+    color: #e0f7fa;
+    font-weight: 800;
+    padding: 4px 8px;
+    background: rgba(79, 179, 191, 0.2);
+    border-radius: 6px;
+    backdrop-filter: blur(10px);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
