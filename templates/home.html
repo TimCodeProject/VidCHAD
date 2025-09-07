@@ -43,6 +43,90 @@
             </div>
         </form>
     </div>
+
+    <!-- Модальное окно для разрешений -->
+    <div class="modal fade" id="permissionModal" tabindex="-1" role="dialog" aria-labelledby="permissionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="permissionModalLabel">Доступ к камере и микрофону</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Для работы видеозвонков необходимо предоставить доступ к вашей камере и микрофону.</p>
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Запрос разрешений...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="retryPermissions">Повторить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+        // Показываем модальное окно сразу при загрузке
+        $('#permissionModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        
+        // Функция запроса разрешений
+        function requestMediaPermissions() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                })
+                .then(function(stream) {
+                    // Разрешения получены, закрываем модальное окно
+                    $('#permissionModal').modal('hide');
+                    
+                    // Останавливаем потоки (они нам пока не нужны на этой странице)
+                    stream.getTracks().forEach(track => track.stop());
+                })
+                .catch(function(error) {
+                    console.error('Ошибка получения доступа к медиаустройствам:', error);
+                    $('#permissionModal .modal-body').html(
+                        '<p class="text-danger">Не удалось получить доступ к камере/микрофону.</p>' +
+                        '<p>Пожалуйста, разрешите доступ в настройках браузера и нажмите "Повторить".</p>'
+                    );
+                });
+            } else {
+                $('#permissionModal .modal-body').html(
+                    '<p class="text-danger">Ваш браузер не поддерживает доступ к камере и микрофону.</p>' +
+                    '<p>Пожалуйста, обновите браузер или используйте современный браузер.</p>'
+                );
+            }
+        }
+        
+        // Запрашиваем разрешения при загрузке
+        requestMediaPermissions();
+        
+        // Обработчик для кнопки "Повторить"
+        $('#retryPermissions').click(function() {
+            $('#permissionModal .modal-body').html(
+                '<p>Для работы видеозвонков необходимо предоставить доступ к вашей камере и микрофону.</p>' +
+                '<div class="text-center">' +
+                '<div class="spinner-border text-primary" role="status">' +
+                '<span class="sr-only">Запрос разрешений...</span>' +
+                '</div>' +
+                '</div>'
+            );
+            requestMediaPermissions();
+        });
+        
+        // Также запрашиваем разрешения при любом взаимодействии с пользователем
+        document.addEventListener('click', function() {
+            if (!$('#permissionModal').hasClass('show')) {
+                requestMediaPermissions();
+            }
+        });
+    });
+    </script>
     
 </body>
 </html>
